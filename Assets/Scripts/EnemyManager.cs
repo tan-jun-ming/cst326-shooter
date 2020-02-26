@@ -11,6 +11,8 @@ public class EnemyManager : MonoBehaviour
     private int formation_width = 11;
     private int formation_height = 5;
 
+    private int formation_count;
+
     private float left_boundary = -92f;
     private float right_boundary = 76f;
     private float top_boundary = 60f;
@@ -31,12 +33,6 @@ public class EnemyManager : MonoBehaviour
 
     private List<List<Enemy>> formation;
 
-    private int x_formation_bound_beg;
-    private int x_formation_bound_end;
-
-    private int y_formation_bound_beg;
-    private int y_formation_bound_end;
-
     private int max_freeze = 70;
     private int freeze = 0;
 
@@ -46,11 +42,7 @@ public class EnemyManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        x_formation_bound_beg = 0;
-        x_formation_bound_end = formation_width - 1;
-
-        y_formation_bound_beg = 0;
-        y_formation_bound_end = formation_height - 1;
+        formation_count = formation_width * formation_height;
 
         formation = new List<List<Enemy>>();
 
@@ -109,9 +101,9 @@ public class EnemyManager : MonoBehaviour
         int counter = -1;
         bool stepped = false;
 
-        for (int i = y_formation_bound_end; i >= y_formation_bound_beg; i--)
+        for (int i = formation_height-1; i >= 0; i--)
         {
-            for (int u = x_formation_bound_beg; u <= x_formation_bound_end; u++)
+            for (int u = 0; u < formation_width; u++)
             {
                 counter++;
 
@@ -143,28 +135,34 @@ public class EnemyManager : MonoBehaviour
                 turn = false;
             }
 
-            for (int i = y_formation_bound_beg; i <= y_formation_bound_end; i++)
+            for (int i = 0; i < formation_height; i++)
             {
-                int column_to_check;
-                if (direction < 0)
+                for (int u = 0; u < formation_width; u++)
                 {
-                    column_to_check = x_formation_bound_beg;
-                    Enemy en = formation[i][column_to_check];
-                    if (!en.dead && en.get_pos().x <= left_boundary)
+                    Enemy en = formation[i][u];
+
+                    if (en.dead)
                     {
-                        change_direction();
-                        break;
+                        continue;
                     }
-                } else if (direction > 0)
-                {
-                    column_to_check = x_formation_bound_end;
-                    Enemy en = formation[i][column_to_check];
-                    if (!en.dead && formation[i][column_to_check].get_pos().x >= right_boundary)
+                    if (direction < 0)
                     {
-                        change_direction();
-                        break;
+                        if (en.get_pos().x <= left_boundary)
+                        {
+                            change_direction();
+                            break;
+                        }
+                    }
+                    else if (direction > 0)
+                    {
+                        if (en.get_pos().x >= right_boundary)
+                        {
+                            change_direction();
+                            break;
+                        }
                     }
                 }
+                
             }
         }
     }
@@ -233,67 +231,16 @@ public class EnemyManager : MonoBehaviour
             return;
         }
 
+        formation_count--;
         freeze = max_freeze;
 
-        if (x == x_formation_bound_beg)
-        {
-            if (check_col_dead(x_formation_bound_beg))
-            {
-                x_formation_bound_beg++;
-            }
-        } else if (x == x_formation_bound_end)
-        {
-            if (check_col_dead(x_formation_bound_end))
-            {
-                x_formation_bound_end--;
-            }
-        }
 
-        if (y == y_formation_bound_beg)
+        if (formation_count <= 0)
         {
-            if (check_row_dead(y_formation_bound_beg))
-            {
-                y_formation_bound_beg++;
-            }
-        } else if (y == y_formation_bound_end)
-        {
-            if (check_row_dead(y_formation_bound_end))
-            {
-                y_formation_bound_end--;
-            }
-        }
-
-        if (x_formation_bound_beg > x_formation_bound_end)
-        {
-            // do something when all enemies defeated
+            print("Congrats everyone is dead.");
         }
     }
 
-    bool check_row_dead(int r)
-    {
-        for (int i=x_formation_bound_beg; i<=x_formation_bound_end; i++)
-        {
-            if (!formation[r][i].dead)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    bool check_col_dead(int c)
-    {
-        for (int i = y_formation_bound_beg; i <= y_formation_bound_end; i++)
-        {
-            if (!formation[i][c].dead)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
     int calculate_enemy_type(int row)
     {
         int[] choices = { 0, 1, 1, 2, 2, 0, 0, 0, 0, 0, 0 };
