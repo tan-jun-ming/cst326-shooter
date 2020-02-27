@@ -116,6 +116,6 @@ public class Enemy : MonoBehaviour
         anim_pop.enabled = true;
 
         death_counter = max_death_counter;
-        manager.report_death(formation_x, formation_y, points_worth);
+        manager.report_death(this);
     }
 }

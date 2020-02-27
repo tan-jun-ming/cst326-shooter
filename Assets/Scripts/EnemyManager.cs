@@ -13,8 +13,8 @@ public class EnemyManager : MonoBehaviour
 
     private int formation_count;
 
-    private float left_boundary = -92f;
-    private float right_boundary = 76f;
+    private float left_boundary;
+    private float right_boundary;
     private float top_boundary = 56f;
     private float bot_boundary = 100f;
 
@@ -24,15 +24,14 @@ public class EnemyManager : MonoBehaviour
     private float enemy_pad_y = 8f;
 
     private int direction = 1;
-    private int next_dir = -1;
 
     private float ufo_start_y = 88f;
     private int ufo_dir = 1;
     private bool ufo_active = false;
     private GameObject active_ufo;
 
-    private List<List<Enemy>> formation;
-    private List<int> shootable;
+    private List<List<Enemy>> formation = new List<List<Enemy>>();
+    private List<int> shootable = new List<int>();
 
     private int max_freeze = 70;
     private int freeze = 0;
@@ -40,25 +39,49 @@ public class EnemyManager : MonoBehaviour
     private int enemy_step_counter = 0;
     private bool turn = false;
 
+    private GameManager gamemanager;
+
     // Start is called before the first frame update
     void Start()
     {
-        formation_count = formation_width * formation_height;
 
-        formation = new List<List<Enemy>>();
-        shootable = new List<int>();
+        gamemanager = (GameManager)GameObject.Find("GameManager").GetComponent(typeof(GameManager));
+        left_boundary = gamemanager.get_left_boundary();
+        right_boundary = gamemanager.get_right_boundary();
+
+        formation_count = formation_width * formation_height;
+    }
+
+    public void restart_game()
+    {
+        //Clear arrays
+        while (formation.Count > 0)
+        {
+            int i = formation.Count - 1;
+            while (formation[i].Count > 0)
+            {
+                int u = formation[i].Count - 1;
+                GameObject.Destroy(formation[i][u]);
+                formation[i].RemoveAt(u);
+            }
+            formation.RemoveAt(i);
+        }
+
+        shootable.Clear();
 
         for (int i = 0; i < formation_height; i++)
         {
-            shootable.Add(formation_width - 1);
             formation.Add(new List<Enemy>());
             for (int u = 0; u < formation_width; u++)
             {
+                if (i == 0)
+                {
+                    shootable.Add(formation_height - 1);
+                }
                 formation[i].Add(initialize_enemy(i, u, calculate_enemy_type(i)));
             }
         }
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -84,7 +107,7 @@ public class EnemyManager : MonoBehaviour
 
         }
 
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown(KeyCode.N))
         {
             spawn_ufo();
         }
@@ -195,7 +218,7 @@ public class EnemyManager : MonoBehaviour
             ufo_start_pos.x = right_boundary;
         }
 
-        active_ufo = GameObject.Instantiate(enemy_ufo, ufo_start_pos, Quaternion.Euler(0, 0, 0));
+        active_ufo = GameObject.Instantiate(enemy_ufo, ufo_start_pos, Quaternion.Euler(0, 0, 0), gameObject.transform);
         Enemy ufo = (Enemy)active_ufo.GetComponent(typeof(Enemy));
         ufo.formation_x = -1;
         ufo.formation_y = -1;
@@ -224,8 +247,13 @@ public class EnemyManager : MonoBehaviour
         ((Enemy)active_ufo.GetComponent(typeof(Enemy))).step(ufo_dir);
 
     }
-    public void report_death(int x, int y, int points)
+    public void report_death(Enemy victim)
     {
+        int x = victim.formation_x - 1;
+        int y = victim.formation_y - 1;
+
+        int points = victim.points_worth;
+
         print(points + " Points!");
 
         if (x < 0)
@@ -275,7 +303,7 @@ public class EnemyManager : MonoBehaviour
         new_coordinates.x = left_boundary + column * (enemy_width + enemy_pad_x);
         new_coordinates.y = top_boundary - row * (enemy_height + enemy_pad_y);
 
-        GameObject new_enemy = GameObject.Instantiate(enemies[type], new_coordinates, Quaternion.Euler(0, 0, 0));
+        GameObject new_enemy = GameObject.Instantiate(enemies[type], new_coordinates, Quaternion.Euler(0, 0, 0), gameObject.transform);
 
         Enemy ret = (Enemy)new_enemy.GetComponent(typeof(Enemy));
 
