@@ -15,7 +15,7 @@ public class EnemyManager : MonoBehaviour
 
     private float left_boundary = -92f;
     private float right_boundary = 76f;
-    private float top_boundary = 60f;
+    private float top_boundary = 56f;
     private float bot_boundary = 100f;
 
     private float enemy_width = 12f;
@@ -26,12 +26,13 @@ public class EnemyManager : MonoBehaviour
     private int direction = 1;
     private int next_dir = -1;
 
-    private float ufo_start_y = 84f;
+    private float ufo_start_y = 88f;
     private int ufo_dir = 1;
     private bool ufo_active = false;
     private GameObject active_ufo;
 
     private List<List<Enemy>> formation;
+    private List<int> shootable;
 
     private int max_freeze = 70;
     private int freeze = 0;
@@ -45,9 +46,11 @@ public class EnemyManager : MonoBehaviour
         formation_count = formation_width * formation_height;
 
         formation = new List<List<Enemy>>();
+        shootable = new List<int>();
 
         for (int i = 0; i < formation_height; i++)
         {
+            shootable.Add(formation_width - 1);
             formation.Add(new List<Enemy>());
             for (int u = 0; u < formation_width; u++)
             {
@@ -234,6 +237,7 @@ public class EnemyManager : MonoBehaviour
         formation_count--;
         freeze = max_freeze;
 
+        shootable[x] = get_bottom_enemy(x);
 
         if (formation_count <= 0)
         {
@@ -241,6 +245,23 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    int get_bottom_enemy(int column)
+    {
+        int ret = -1;
+
+        for (int i=formation_height-1; i>=0; i--)
+        {
+            if (!formation[i][column].dead)
+            {
+                ret = i;
+                break;
+            }
+        }
+
+        return ret;
+
+
+    }
     int calculate_enemy_type(int row)
     {
         int[] choices = { 0, 1, 1, 2, 2, 0, 0, 0, 0, 0, 0 };

@@ -22,7 +22,9 @@ public class CameraPostProcessing : MonoBehaviour
 
     void Awake()
     {
-        bg_view = new RenderTexture(2496, 1404, 16, RenderTextureFormat.ARGB32);
+        //bg_view = new RenderTexture(624, 350, 16, RenderTextureFormat.ARGB32);
+        bg_view = new RenderTexture(512, 290, 16, RenderTextureFormat.ARGB32);
+        bg_view.filterMode = FilterMode.Point;
         bg_view.Create();
         camera_bg.targetTexture = bg_view;
 
