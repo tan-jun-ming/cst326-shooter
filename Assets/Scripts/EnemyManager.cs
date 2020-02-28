@@ -305,7 +305,7 @@ public class EnemyManager : MonoBehaviour
 
         if (formation_count <= 0)
         {
-            print("Congrats everyone is dead.");
+            gamemanager.next_round();
         }
     }
 

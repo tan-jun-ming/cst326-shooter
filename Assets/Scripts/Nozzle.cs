@@ -8,6 +8,8 @@ public class Nozzle : MonoBehaviour
     public int bullet_limit = 0;
     private int bullet_count = 0;
 
+    private Transform bulletholder;
+
     public float bullet_speed = 2f;
 
     public GameObject[] bullets;
@@ -19,13 +21,7 @@ public class Nozzle : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        bulletholder = GameObject.Find("BulletHolder").transform;
     }
 
     public void fire()
@@ -36,7 +32,7 @@ public class Nozzle : MonoBehaviour
         }
 
         GameObject bullet = bullets[Random.Range(0, bullets.Length)];
-        GameObject new_bullet = GameObject.Instantiate(bullet, gameObject.transform.position, Quaternion.Euler(0, 0, 0));
+        GameObject new_bullet = GameObject.Instantiate(bullet, gameObject.transform.position, Quaternion.Euler(0, 0, 0), bulletholder);
 
         Bullet bullet_script = (Bullet)new_bullet.GetComponent(typeof(Bullet));
         bullet_script.direction = direction;

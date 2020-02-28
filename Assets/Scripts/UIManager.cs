@@ -24,8 +24,15 @@ public class UIManager : MonoBehaviour
 
     public void restart_game()
     {
-        score = 0;
-        update_score();
+        restart_game(true);
+    }
+    public void restart_game(bool refresh_score)
+    {
+        if (refresh_score)
+        {
+            score = 0;
+            update_score();
+        }
         update_lives();
         hide_game_over();
     }

@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public EnemyManager enemymanager;
     public UIManager uimanager;
     public BarrierManager barriermanager;
+    public Transform bulletholder;
 
     private int player_respawn_timer_max = 120;
     private int player_respawn_timer = 0;
@@ -30,9 +31,17 @@ public class GameManager : MonoBehaviour
 
     void do_restart()
     {
-        lives = lives_max;
-        uimanager.set_lives(lives);
-        uimanager.restart_game();
+        do_restart(true);
+    }
+    void do_restart(bool next_round)
+    {
+        if (next_round)
+        {
+            lives = lives_max;
+            uimanager.set_lives(lives);
+        }
+        uimanager.restart_game(next_round);
+        empty_bullets();
         instantiate_player();
         enemymanager.restart_game();
         barriermanager.initialize_barriers();
@@ -87,6 +96,20 @@ public class GameManager : MonoBehaviour
     {
         playermanager.kill(true);
         do_game_over();
+    }
+
+    public void next_round()
+    {
+        do_restart(false);
+        playermanager.silent_remove();
+    }
+
+    void empty_bullets()
+    {
+        foreach (Transform child in bulletholder)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
     }
 
     public void report_player_death()

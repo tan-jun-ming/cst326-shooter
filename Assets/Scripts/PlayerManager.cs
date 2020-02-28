@@ -82,6 +82,11 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    public void silent_remove()
+    {
+        GameObject.Destroy(gameObject);
+    }
+
     public void kill()
     {
         kill(false);
