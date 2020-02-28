@@ -88,6 +88,11 @@ public class Enemy : MonoBehaviour
 
         gameObject.transform.Translate(to_translate);
         step_anim();
+
+        if (gameObject.transform.position.y <= -64f)
+        {
+            za_hando();
+        }
     }
 
     public Vector3 get_pos()
@@ -104,6 +109,30 @@ public class Enemy : MonoBehaviour
             anim_1.enabled = !animation_step;
             anim_2.enabled = animation_step;
         }
+    }
+
+    void za_hando()
+    {
+        
+        Vector2 top_left = new Vector2(gameObject.transform.position.x - 1, gameObject.transform.position.y);
+        Vector2 bottom_right = new Vector2(gameObject.transform.position.x + 13, gameObject.transform.position.y - 8);
+
+        Collider2D[] hit = Physics2D.OverlapAreaAll(top_left, bottom_right, Physics2D.DefaultRaycastLayers, 0, 0);
+
+        foreach (Collider2D col in hit)
+        {
+            Transform barrier_hit = col.transform;
+
+            if (barrier_hit.CompareTag("UnbreakableBarrier"))
+            {
+                ((SpriteRenderer)barrier_hit.GetChild(0).GetComponent(typeof(SpriteRenderer))).enabled = false;
+            }
+            else if (barrier_hit.CompareTag("Barrier"))
+            {
+                GameObject.Destroy(barrier_hit.gameObject);
+            }
+        }
+
     }
 
     public void fire()

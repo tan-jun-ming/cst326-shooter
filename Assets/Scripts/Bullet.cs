@@ -88,10 +88,8 @@ public class Bullet : MonoBehaviour
             {
                 Vector2 origin = new Vector2(left + u + 0.5f, top + i + 0.5f);
 
-                Color color = Color.red;
                 if (explosion.GetPixel(u, i).a == 1)
                 {
-                    color = Color.blue;
                     Collider2D hit = Physics2D.OverlapCircle(origin, 0.2f, Physics2D.DefaultRaycastLayers, 0, 0);
 
                     if (hit != null)
@@ -108,8 +106,6 @@ public class Bullet : MonoBehaviour
                     }
 
                 }
-
-                //Debug.DrawRay(origin, Vector3.up, color, 10f, false);
             }
 
         }

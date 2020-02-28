@@ -16,7 +16,7 @@ public class EnemyManager : MonoBehaviour
     private float left_boundary;
     private float right_boundary;
     private float top_boundary = 56f;
-    private float bot_boundary = 100f;
+    private float bot_boundary = -88f;
 
     private float enemy_width = 12f;
     private float enemy_height = 8f;
@@ -28,7 +28,7 @@ public class EnemyManager : MonoBehaviour
     private float ufo_start_y = 88f;
     private int ufo_dir = 1;
     private bool ufo_active = false;
-    private int ufo_throttle = 8;
+    private int ufo_throttle = 2;
     private int ufo_step_counter = 0;
 
     private GameObject active_ufo;
@@ -59,8 +59,6 @@ public class EnemyManager : MonoBehaviour
         gamemanager = (GameManager)GameObject.Find("GameManager").GetComponent(typeof(GameManager));
         left_boundary = gamemanager.get_left_boundary();
         right_boundary = gamemanager.get_right_boundary();
-
-        formation_count = formation_width * formation_height;
     }
 
     public void game_over()
@@ -91,6 +89,8 @@ public class EnemyManager : MonoBehaviour
         game_running = true;
         fire_cooldown = fire_cooldown_max;
         ufo_cooldown = ufo_cooldown_max;
+
+        formation_count = formation_width * formation_height;
 
         clear_formation();
 
