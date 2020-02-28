@@ -254,7 +254,7 @@ public class EnemyManager : MonoBehaviour
 
         int points = victim.points_worth;
 
-        print(points + " Points!");
+        gamemanager.add_score(points);
 
         if (x < 0)
         {

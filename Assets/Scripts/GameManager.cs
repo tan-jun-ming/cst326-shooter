@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject player;
     public EnemyManager enemymanager;
+    public UIManager uimanager;
 
     // Start is called before the first frame update
     void Start()
@@ -45,5 +46,10 @@ public class GameManager : MonoBehaviour
     public float get_right_boundary()
     {
         return right_boundary;
+    }
+
+    public void add_score(int score)
+    {
+        uimanager.add_score(score);
     }
 }
