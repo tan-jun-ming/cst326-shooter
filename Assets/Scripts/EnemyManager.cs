@@ -39,6 +39,12 @@ public class EnemyManager : MonoBehaviour
     private int enemy_step_counter = 0;
     private bool turn = false;
 
+    private int fire_cooldown_max = 60;
+    private int fire_cooldown;
+
+    private int ufo_cooldown_max = 1000;
+    private int ufo_cooldown;
+
     private GameManager gamemanager;
 
     // Start is called before the first frame update
@@ -54,6 +60,9 @@ public class EnemyManager : MonoBehaviour
 
     public void restart_game()
     {
+        fire_cooldown = fire_cooldown_max;
+        ufo_cooldown = ufo_cooldown_max;
+
         //Clear arrays
         while (formation.Count > 0)
         {
@@ -119,6 +128,26 @@ public class EnemyManager : MonoBehaviour
         }
 
         step_enemies();
+        
+        if (fire_cooldown > 0)
+        {
+            fire_cooldown--;
+            if (fire_cooldown == 0)
+            {
+                fire_cooldown = fire_cooldown_max;
+                fire();
+            }
+        }
+
+        if (ufo_cooldown > 0 && !ufo_active && formation_count <= 9)
+        {
+            ufo_cooldown--;
+            if (ufo_cooldown == 0)
+            {
+                ufo_cooldown = ufo_cooldown_max;
+                spawn_ufo();
+            }
+        }
 
     }
 
@@ -247,10 +276,11 @@ public class EnemyManager : MonoBehaviour
         ((Enemy)active_ufo.GetComponent(typeof(Enemy))).step(ufo_dir);
 
     }
+
     public void report_death(Enemy victim)
     {
-        int x = victim.formation_x - 1;
-        int y = victim.formation_y - 1;
+        int x = victim.formation_x;
+        int y = victim.formation_y;
 
         int points = victim.points_worth;
 
@@ -277,6 +307,7 @@ public class EnemyManager : MonoBehaviour
     {
         int ret = -1;
 
+
         for (int i=formation_height-1; i>=0; i--)
         {
             if (!formation[i][column].dead)
@@ -290,6 +321,35 @@ public class EnemyManager : MonoBehaviour
 
 
     }
+
+    void fire()
+    {
+        List<int> possible_rows = new List<int>();
+
+        for (int i=0; i<shootable.Count; i++)
+        {
+            if (shootable[i] >= 0)
+            {
+                possible_rows.Add(i);
+            }
+        }
+
+        if (possible_rows.Count == 0)
+        {
+            return;
+        }
+
+        int shooting_row = possible_rows[Random.Range(0, possible_rows.Count)];
+        Enemy shooter = formation[shootable[shooting_row]][shooting_row];
+
+        shooter.fire();
+    }
+
+    public void set_freeze(int num)
+    {
+        freeze = num;
+    }
+
     int calculate_enemy_type(int row)
     {
         int[] choices = { 0, 1, 1, 2, 2, 0, 0, 0, 0, 0, 0 };
