@@ -12,29 +12,47 @@ public class Bullet : MonoBehaviour
 
     public int shooter;
 
+    public Nozzle nozzle;
+
     private bool dead = false;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private int kill_counter = 30;
+    private bool to_explode = false;
 
     // Update is called once per frame
     void Update()
     {
         if (dead)
         {
+            if (kill_counter > 0)
+            {
+                kill_counter--;
+                if (kill_counter == 0)
+                {
+                    if (to_explode)
+                    {
+                        explode();
+                    }
+                    destroy_bullet();
+                }
+            }
             return;
         }
-
-        Vector2 new_pos = (Vector2)(gameObject.transform.position + Vector3.up * (direction * speed));
-
-        ((Rigidbody2D)gameObject.GetComponent(typeof(Rigidbody2D))).MovePosition(new_pos);
 
         if (frames > 1)
         {
             frame_counter = (frame_counter + 1) % frames;
             set_animation_frame();
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (!dead)
+        {
+            Vector2 new_pos = (Vector2)(gameObject.transform.position + Vector3.up * (direction * speed));
+
+            ((Rigidbody2D)gameObject.GetComponent(typeof(Rigidbody2D))).MovePosition(new_pos);
+
         }
     }
 
@@ -46,15 +64,72 @@ public class Bullet : MonoBehaviour
             sprite.enabled = i == frame_counter;
         }
     }
+
     void explode()
     {
+        Transform anim_pop = gameObject.transform.Find("anim_pop");
+        SpriteRenderer pop_anim = (SpriteRenderer)anim_pop.GetComponent(typeof(SpriteRenderer));
+
+        Texture2D explosion = pop_anim.sprite.texture;
+
+        float left = anim_pop.position.x - (explosion.width / 2);
+        float top = anim_pop.position.y - (explosion.height / 2);
+
+        for (int i = 0; i < explosion.height; i++)
+        {
+            for (int u = 0; u < explosion.width; u++)
+            {
+                Vector2 origin = new Vector2(left + u + 0.5f, top + i + 0.5f);
+
+                Color color = Color.red;
+                if (explosion.GetPixel(u, i).a == 1)
+                {
+                    color = Color.blue;
+                    Collider2D hit = Physics2D.OverlapCircle(origin, 0.2f, Physics2D.DefaultRaycastLayers, 0, 0);
+
+                    if (hit != null)
+                    {
+                        Transform barrier_hit = hit.transform;
+
+                        if (barrier_hit.CompareTag("UnbreakableBarrier"))
+                        {
+                            ((SpriteRenderer)barrier_hit.GetChild(0).GetComponent(typeof(SpriteRenderer))).enabled = false;
+                        } else
+                        {
+                            GameObject.Destroy(hit.gameObject);
+                        }
+                    }
+
+                }
+
+                //Debug.DrawRay(origin, Vector3.up, color, 10f, false);
+            }
+
+        }
+    }
+    void pop(bool explode)
+    {
         dead = true;
+        to_explode = explode;
+
         frame_counter = -1;
         set_animation_frame();
 
         ((Collider2D)gameObject.GetComponent(typeof(Collider2D))).enabled = false;
-        ((SpriteRenderer)gameObject.transform.Find("anim_pop").GetComponent(typeof(SpriteRenderer))).enabled = true;
 
+        if (to_explode)
+        {
+            Transform anim_pop = gameObject.transform.Find("anim_pop");
+            SpriteRenderer pop_anim = (SpriteRenderer)anim_pop.GetComponent(typeof(SpriteRenderer));
+            pop_anim.enabled = true;
+        }
+
+    }
+
+    void destroy_bullet()
+    {
+        nozzle.report_bullet_death();
+        GameObject.Destroy(gameObject);
     }
 
     void OnTriggerEnter2D(Collider2D collider)
@@ -66,15 +141,18 @@ public class Bullet : MonoBehaviour
         if (collider.transform.CompareTag("Enemy"))
         {
             ((Enemy)collider.transform.gameObject.GetComponent(typeof(Enemy))).kill();
-            GameObject.Destroy(gameObject);
+            pop(false);
+
         } else if (collider.transform.CompareTag("Player"))
         {
             ((PlayerManager)collider.transform.gameObject.GetComponent(typeof(PlayerManager))).kill();
-            GameObject.Destroy(gameObject);
-        } else if (collider.transform.CompareTag("Bullet"))
+            pop(false);
+
+        } else if (collider.transform.CompareTag("Bullet") || collider.transform.CompareTag("Barrier") || collider.transform.CompareTag("UnbreakableBarrier"))
         {
-            explode();
+            pop(true);
         }
     }
+
 
 }

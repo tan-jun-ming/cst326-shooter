@@ -206,10 +206,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 1
-  cooldown: 80
+  bullet_limit: 1
   bullet_speed: 5
   bullets:
   - {fileID: 4008637836461039278, guid: eb93d3b58655b1f4f9006706495edf5b, type: 3}
+  shooter: 0
 --- !u!1 &1464073530082187252
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,3 +366,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0eacc6ad5124274081f781f6f4a9666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dead: 0
