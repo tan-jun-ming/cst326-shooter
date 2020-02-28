@@ -356,6 +356,11 @@ public class EnemyManager : MonoBehaviour
         freeze = num;
     }
 
+    public void confirm_breach()
+    {
+        gamemanager.force_game_over();
+    }
+
     int calculate_enemy_type(int row)
     {
         int[] choices = { 0, 1, 1, 2, 2, 0, 0, 0, 0, 0, 0 };
@@ -375,6 +380,8 @@ public class EnemyManager : MonoBehaviour
 
         ret.formation_x = column;
         ret.formation_y = row;
+
+        ret.bot_boundary = bot_boundary;
 
         ret.max_death_counter = max_freeze;
         ret.y_step = enemy_height;

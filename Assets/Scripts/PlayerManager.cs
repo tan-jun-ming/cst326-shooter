@@ -84,13 +84,21 @@ public class PlayerManager : MonoBehaviour
 
     public void kill()
     {
+        kill(false);
+    }
+
+    public void kill(bool forced)
+    {
         if (!dead)
         {
             dead = true;
             anim.enabled = false;
             anim_pop_1.enabled = true;
 
-            gamemanager.report_player_death();
+            if (!forced)
+            {
+                gamemanager.report_player_death();
+            }
         }
     }
 }

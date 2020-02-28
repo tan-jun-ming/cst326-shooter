@@ -17,6 +17,9 @@ public class Enemy : MonoBehaviour
     [HideInInspector]
     public int formation_y;
 
+    [HideInInspector]
+    public float bot_boundary;
+
     private bool animation_step = false;
 
     private SpriteRenderer anim_1;
@@ -92,6 +95,11 @@ public class Enemy : MonoBehaviour
         if (gameObject.transform.position.y <= -64f)
         {
             za_hando();
+        }
+
+        if (!is_ufo && gameObject.transform.position.y <= bot_boundary)
+        {
+            manager.confirm_breach();
         }
     }
 

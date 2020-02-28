@@ -31,9 +31,10 @@ public class GameManager : MonoBehaviour
     void do_restart()
     {
         lives = lives_max;
+        uimanager.set_lives(lives);
+        uimanager.restart_game();
         instantiate_player();
         enemymanager.restart_game();
-        uimanager.restart_game();
         barriermanager.initialize_barriers();
     }
 
@@ -82,6 +83,12 @@ public class GameManager : MonoBehaviour
         uimanager.add_score(score);
     }
 
+    public void force_game_over()
+    {
+        playermanager.kill(true);
+        do_game_over();
+    }
+
     public void report_player_death()
     {
         lives--;
@@ -89,11 +96,7 @@ public class GameManager : MonoBehaviour
 
         if (lives == 0)
         {
-            uimanager.show_game_over();
-            enemymanager.game_over();
-
-            // Update highscore on game over
-            highscore = Mathf.Max(highscore, uimanager.get_highscore());
+            do_game_over();
 
         } else
         {
@@ -101,5 +104,15 @@ public class GameManager : MonoBehaviour
         }
         player_respawn_timer = player_respawn_timer_max;
         
+    }
+
+    void do_game_over()
+    {
+        lives = 0;
+        uimanager.show_game_over();
+        enemymanager.game_over();
+
+        // Update highscore on game over
+        highscore = Mathf.Max(highscore, uimanager.get_highscore());
     }
 }
