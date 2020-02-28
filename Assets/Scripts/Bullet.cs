@@ -18,6 +18,8 @@ public class Bullet : MonoBehaviour
     private int kill_counter = 30;
     private bool to_explode = false;
 
+    private float boundary_y = 128f;
+
     // Update is called once per frame
     void Update()
     {
@@ -42,6 +44,11 @@ public class Bullet : MonoBehaviour
         {
             frame_counter = (frame_counter + 1) % frames;
             set_animation_frame();
+        }
+
+        if (gameObject.transform.position.y > boundary_y || gameObject.transform.position.y < -boundary_y)
+        {
+            destroy_bullet();
         }
     }
 
@@ -94,7 +101,7 @@ public class Bullet : MonoBehaviour
                         if (barrier_hit.CompareTag("UnbreakableBarrier"))
                         {
                             ((SpriteRenderer)barrier_hit.GetChild(0).GetComponent(typeof(SpriteRenderer))).enabled = false;
-                        } else
+                        } else if (barrier_hit.CompareTag("Barrier"))
                         {
                             GameObject.Destroy(hit.gameObject);
                         }
@@ -141,6 +148,7 @@ public class Bullet : MonoBehaviour
         if (collider.transform.CompareTag("Enemy"))
         {
             ((Enemy)collider.transform.gameObject.GetComponent(typeof(Enemy))).kill();
+            kill_counter = 60;
             pop(false);
 
         } else if (collider.transform.CompareTag("Player"))

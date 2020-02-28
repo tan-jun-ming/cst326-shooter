@@ -41,25 +41,11 @@ public class BarrierManager : MonoBehaviour
     private float barrier_pad_x = 24f;
     private int barrier_count = 4;
 
-    // Start is called before the first frame update
-    void Start()
+    public void initialize_barriers()
     {
-        initialize_barriers();
-
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void initialize_barriers()
-    {
-        while (gameObject.transform.childCount > 0)
+        foreach (Transform child in gameObject.transform)
         {
-            GameObject.Destroy(gameObject.transform.GetChild(0));
+            GameObject.Destroy(child.gameObject);
         }
 
         for (int i = -hor_boundary; i<hor_boundary; i++)

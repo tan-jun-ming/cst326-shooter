@@ -12,9 +12,14 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public EnemyManager enemymanager;
     public UIManager uimanager;
+    public BarrierManager barriermanager;
 
-    private int player_respawn_timer_max = 60;
+    private int player_respawn_timer_max = 120;
     private int player_respawn_timer = 0;
+
+    private int lives_max = 3;
+    private int lives = 3;
+    private int highscore = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -25,8 +30,11 @@ public class GameManager : MonoBehaviour
 
     void do_restart()
     {
+        lives = lives_max;
         instantiate_player();
         enemymanager.restart_game();
+        uimanager.restart_game();
+        barriermanager.initialize_barriers();
     }
 
     void instantiate_player()
@@ -43,7 +51,18 @@ public class GameManager : MonoBehaviour
             player_respawn_timer--;
             if (player_respawn_timer == 0)
             {
-                instantiate_player();
+                if (lives > 0)
+                {
+                    instantiate_player();
+                }
+            }
+        }
+
+        if (player_respawn_timer == 0 && lives == 0)
+        {
+            if (Input.GetAxis("Fire1") > 0)
+            {
+                do_restart();
             }
         }
     }
@@ -65,7 +84,22 @@ public class GameManager : MonoBehaviour
 
     public void report_player_death()
     {
-        enemymanager.set_freeze(player_respawn_timer_max);
+        lives--;
+        uimanager.set_lives(lives);
+
+        if (lives == 0)
+        {
+            uimanager.show_game_over();
+            enemymanager.game_over();
+
+            // Update highscore on game over
+            highscore = Mathf.Max(highscore, uimanager.get_highscore());
+
+        } else
+        {
+            enemymanager.set_freeze(player_respawn_timer_max);
+        }
         player_respawn_timer = player_respawn_timer_max;
+        
     }
 }

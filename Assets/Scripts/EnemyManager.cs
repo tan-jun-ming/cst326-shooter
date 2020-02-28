@@ -28,6 +28,9 @@ public class EnemyManager : MonoBehaviour
     private float ufo_start_y = 88f;
     private int ufo_dir = 1;
     private bool ufo_active = false;
+    private int ufo_throttle = 8;
+    private int ufo_step_counter = 0;
+
     private GameObject active_ufo;
 
     private List<List<Enemy>> formation = new List<List<Enemy>>();
@@ -45,6 +48,8 @@ public class EnemyManager : MonoBehaviour
     private int ufo_cooldown_max = 1000;
     private int ufo_cooldown;
 
+    private bool game_running = false;
+
     private GameManager gamemanager;
 
     // Start is called before the first frame update
@@ -58,11 +63,13 @@ public class EnemyManager : MonoBehaviour
         formation_count = formation_width * formation_height;
     }
 
-    public void restart_game()
+    public void game_over()
     {
-        fire_cooldown = fire_cooldown_max;
-        ufo_cooldown = ufo_cooldown_max;
+        game_running = false;
+    }
 
+    public void clear_formation()
+    {
         //Clear arrays
         while (formation.Count > 0)
         {
@@ -70,13 +77,22 @@ public class EnemyManager : MonoBehaviour
             while (formation[i].Count > 0)
             {
                 int u = formation[i].Count - 1;
-                GameObject.Destroy(formation[i][u]);
+                GameObject.Destroy(formation[i][u].gameObject);
                 formation[i].RemoveAt(u);
             }
             formation.RemoveAt(i);
         }
 
         shootable.Clear();
+
+    }
+    public void restart_game()
+    {
+        game_running = true;
+        fire_cooldown = fire_cooldown_max;
+        ufo_cooldown = ufo_cooldown_max;
+
+        clear_formation();
 
         for (int i = 0; i < formation_height; i++)
         {
@@ -99,26 +115,9 @@ public class EnemyManager : MonoBehaviour
             step_ufo();
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (!game_running)
         {
-
-            float distance = 25f;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, distance);
-
-            if (hit)
-            {
-                if (hit.transform.CompareTag("Enemy"))
-                {
-                    ((Enemy)hit.transform.gameObject.GetComponent(typeof(Enemy))).kill();
-                }
-            }
-
-        }
-
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            spawn_ufo();
+            return;
         }
 
         if (freeze > 0)
@@ -139,7 +138,7 @@ public class EnemyManager : MonoBehaviour
             }
         }
 
-        if (ufo_cooldown > 0 && !ufo_active && formation_count <= 9)
+        if (ufo_cooldown > 0 && !ufo_active && formation_count > 9)
         {
             ufo_cooldown--;
             if (ufo_cooldown == 0)
@@ -241,6 +240,8 @@ public class EnemyManager : MonoBehaviour
         Vector3 ufo_start_pos = Vector3.up * ufo_start_y;
         ufo_start_pos.x = left_boundary;
 
+        ufo_step_counter = ufo_throttle;
+
         if (ufo_dir == 0)
         {
             ufo_dir = -1;
@@ -273,7 +274,12 @@ public class EnemyManager : MonoBehaviour
             return;
         }
 
-        ((Enemy)active_ufo.GetComponent(typeof(Enemy))).step(ufo_dir);
+        ufo_step_counter = (ufo_step_counter + 1) % ufo_throttle;
+
+        if (ufo_step_counter == 0)
+        {
+            ((Enemy)active_ufo.GetComponent(typeof(Enemy))).step(ufo_dir);
+        }
 
     }
 
@@ -324,23 +330,23 @@ public class EnemyManager : MonoBehaviour
 
     void fire()
     {
-        List<int> possible_rows = new List<int>();
+        List<int> possible_columns = new List<int>();
 
         for (int i=0; i<shootable.Count; i++)
         {
             if (shootable[i] >= 0)
             {
-                possible_rows.Add(i);
+                possible_columns.Add(i);
             }
         }
 
-        if (possible_rows.Count == 0)
+        if (possible_columns.Count == 0)
         {
             return;
         }
 
-        int shooting_row = possible_rows[Random.Range(0, possible_rows.Count)];
-        Enemy shooter = formation[shootable[shooting_row]][shooting_row];
+        int shooting_column = possible_columns[Random.Range(0, possible_columns.Count)];
+        Enemy shooter = formation[shootable[shooting_column]][shooting_column];
 
         shooter.fire();
     }

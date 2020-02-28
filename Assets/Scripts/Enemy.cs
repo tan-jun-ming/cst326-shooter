@@ -10,7 +10,6 @@ public class Enemy : MonoBehaviour
     [HideInInspector]
     public EnemyManager manager;
 
-    [HideInInspector]
     public bool dead = false;
 
     [HideInInspector]
@@ -38,13 +37,13 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        nozzle = (Nozzle)gameObject.transform.Find("Nozzle").GetComponent(typeof(Nozzle));
-        nozzle.shooter = gameObject.GetInstanceID();
 
         anim_1 = ((SpriteRenderer)gameObject.transform.Find("anim_1").GetComponent(typeof(SpriteRenderer)));
 
         if (!is_ufo)
         {
+            nozzle = (Nozzle)gameObject.transform.Find("Nozzle").GetComponent(typeof(Nozzle));
+            nozzle.shooter = gameObject.GetInstanceID();
             anim_2 = ((SpriteRenderer)gameObject.transform.Find("anim_2").GetComponent(typeof(SpriteRenderer)));
         }
 

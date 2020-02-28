@@ -19,14 +19,15 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        update_score();
-        update_lives();
+        restart_game();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void restart_game()
     {
-        
+        score = 0;
+        update_score();
+        update_lives();
+        hide_game_over();
     }
 
     void update_score()
@@ -60,12 +61,12 @@ public class UIManager : MonoBehaviour
         life_2.enabled = lives > 2;
     }
 
-    void show_gameover()
+    public void show_game_over()
     {
         gameover_display.enabled = true;
     }
 
-    void hide_gameover()
+    void hide_game_over()
     {
         gameover_display.enabled = false;
     }
