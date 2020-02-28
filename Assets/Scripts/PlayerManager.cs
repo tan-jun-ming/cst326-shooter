@@ -11,6 +11,7 @@ public class PlayerManager : MonoBehaviour
 
     private GameManager gamemanager;
 
+    private bool shooting = false;
 
     // Start is called before the first frame update
     void Start()
@@ -40,9 +41,13 @@ public class PlayerManager : MonoBehaviour
         gameObject.transform.position = new_pos;
 
         float z = Input.GetAxis("Fire1");
-        if (z > 0)
+        if (z > 0 && !shooting)
         {
             nozzle.fire();
+            shooting = true;
+        } else if (z == 0)
+        {
+            shooting = false;
         }
     }
 }
