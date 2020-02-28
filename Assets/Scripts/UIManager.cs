@@ -7,14 +7,20 @@ public class UIManager : MonoBehaviour
     public TMPro.TextMeshProUGUI score_display;
     public TMPro.TextMeshProUGUI highscore_display;
     public TMPro.TextMeshProUGUI gameover_display;
+    public TMPro.TextMeshProUGUI life_display;
 
-    private int score = 50;
-    private int highscore = 50;
+    public SpriteRenderer life_1;
+    public SpriteRenderer life_2;
+
+    private int score = 0;
+    private int highscore = 0;
+    private int lives = 3;
 
     // Start is called before the first frame update
     void Start()
     {
         update_score();
+        update_lives();
     }
 
     // Update is called once per frame
@@ -38,6 +44,30 @@ public class UIManager : MonoBehaviour
         }
 
         update_score();
+    }
+
+    public void set_lives(int new_lives)
+    {
+        lives = new_lives;
+        update_lives();
+    }
+
+    void update_lives()
+    {
+        update_text(life_display, lives.ToString());
+
+        life_1.enabled = lives > 1;
+        life_2.enabled = lives > 2;
+    }
+
+    void show_gameover()
+    {
+        gameover_display.enabled = true;
+    }
+
+    void hide_gameover()
+    {
+        gameover_display.enabled = false;
     }
 
     public void set_highscore(int new_highscore)
