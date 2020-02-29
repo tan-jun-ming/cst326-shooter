@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class BarrierManager : MonoBehaviour
 {
-    private float top_boundary = 96f;
-    private float mid_boundary = -98f;
     private float bot_boundary = -104f;
 
     private float barrier_start_y = -64f;
@@ -52,16 +50,8 @@ public class BarrierManager : MonoBehaviour
         {
             Vector3 new_barrier_pos = Vector3.right * i;
 
-            GameObject top_barrier = GameObject.Instantiate(barrier, new_barrier_pos + Vector3.up * top_boundary, Quaternion.Euler(0, 0, 0), gameObject.transform);
-            GameObject mid_barrier = GameObject.Instantiate(barrier, new_barrier_pos + Vector3.up * mid_boundary, Quaternion.Euler(0, 0, 0), gameObject.transform);
             GameObject bot_barrier = GameObject.Instantiate(barrier, new_barrier_pos + Vector3.up * bot_boundary, Quaternion.Euler(0, 0, 0), gameObject.transform);
-
-            top_barrier.tag = "UnbreakableBarrier";
-            mid_barrier.tag = "UnbreakableBarrier";
             bot_barrier.tag = "UnbreakableBarrier";
-
-            ((SpriteRenderer)top_barrier.transform.GetChild(0).GetComponent(typeof(SpriteRenderer))).enabled = false;
-            ((SpriteRenderer)mid_barrier.transform.GetChild(0).GetComponent(typeof(SpriteRenderer))).enabled = false;
         }
 
         for (int c = 0; c < barrier_count; c++)

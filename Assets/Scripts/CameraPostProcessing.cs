@@ -7,8 +7,8 @@ public class CameraPostProcessing : MonoBehaviour
 {
     public Sprite[] bg_textures;
     public Camera camera_bg;
-    //private int bg_counter = -1;
-    private int bg_counter = 0;
+    private int bg_counter = -1;
+    //private int bg_counter = 0;
     
     public Material material;
 

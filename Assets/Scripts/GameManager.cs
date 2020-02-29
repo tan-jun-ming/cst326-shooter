@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour
     public BarrierManager barriermanager;
     public Transform bulletholder;
 
+    private int next_round_timer_max = 500;
+    private int next_round_timer = 0;
+
     private int player_respawn_timer_max = 120;
     private int player_respawn_timer = 0;
 
@@ -75,6 +78,15 @@ public class GameManager : MonoBehaviour
                 do_restart();
             }
         }
+
+        if (next_round_timer > 0)
+        {
+            next_round_timer--;
+            if (next_round_timer == 0)
+            {
+                do_restart(false);
+            }
+        }
     }
 
     public float get_left_boundary()
@@ -100,7 +112,7 @@ public class GameManager : MonoBehaviour
 
     public void next_round()
     {
-        do_restart(false);
+        next_round_timer = next_round_timer_max;
         playermanager.silent_remove();
     }
 

@@ -18,7 +18,8 @@ public class Bullet : MonoBehaviour
     private int kill_counter = 30;
     private bool to_explode = false;
 
-    private float boundary_y = 128f;
+    private float top_boundary_y = 87f;
+    private float bot_boundary_y = -96f;
 
     // Update is called once per frame
     void Update()
@@ -46,9 +47,9 @@ public class Bullet : MonoBehaviour
             set_animation_frame();
         }
 
-        if (gameObject.transform.position.y > boundary_y || gameObject.transform.position.y < -boundary_y)
+        if (gameObject.transform.position.y > top_boundary_y || gameObject.transform.position.y < bot_boundary_y)
         {
-            destroy_bullet();
+            pop(true);
         }
     }
 
@@ -74,6 +75,13 @@ public class Bullet : MonoBehaviour
 
     void explode()
     {
+        List<Collider2D> hits = new List<Collider2D>();
+
+        Vector2 stick_corner_a = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + -direction);
+        Vector2 stick_corner_b = new Vector2(gameObject.transform.position.x + 3, gameObject.transform.position.y + 3 * -direction);
+
+        hits.AddRange(Physics2D.OverlapAreaAll(stick_corner_a, stick_corner_b, Physics2D.DefaultRaycastLayers, 0, 0));
+
         Transform anim_pop = gameObject.transform.Find("anim_pop");
         SpriteRenderer pop_anim = (SpriteRenderer)anim_pop.GetComponent(typeof(SpriteRenderer));
 
@@ -94,20 +102,25 @@ public class Bullet : MonoBehaviour
 
                     if (hit != null)
                     {
-                        Transform barrier_hit = hit.transform;
-
-                        if (barrier_hit.CompareTag("UnbreakableBarrier"))
-                        {
-                            ((SpriteRenderer)barrier_hit.GetChild(0).GetComponent(typeof(SpriteRenderer))).enabled = false;
-                        } else if (barrier_hit.CompareTag("Barrier"))
-                        {
-                            GameObject.Destroy(hit.gameObject);
-                        }
+                        hits.Add(hit);
                     }
 
                 }
             }
 
+        }
+
+        foreach (Collider2D hit in hits){
+            Transform barrier_hit = hit.transform;
+
+            if (barrier_hit.CompareTag("UnbreakableBarrier"))
+            {
+                ((SpriteRenderer)barrier_hit.GetChild(0).GetComponent(typeof(SpriteRenderer))).enabled = false;
+            }
+            else if (barrier_hit.CompareTag("Barrier"))
+            {
+                GameObject.Destroy(hit.gameObject);
+            }
         }
     }
     void pop(bool explode)
