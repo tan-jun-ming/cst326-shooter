@@ -125,11 +125,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: -1
-  cooldown: 0
+  bullet_limit: 0
+  bullet_speed: 2
   bullets:
   - {fileID: 714414465511828563, guid: 007cc042cd92f6a45af22fd248105b15, type: 3}
   - {fileID: 5148648950035110183, guid: 4cf1f38ba85a450438e056cce616779e, type: 3}
   - {fileID: 6513299818454658939, guid: 3c5e9c8b4001d6a41ba0b95e2df17e3d, type: 3}
+  shooter: 0
 --- !u!1 &5696655631376335989
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,6 +267,7 @@ MonoBehaviour:
   dead: 0
   formation_x: 0
   formation_y: 0
+  bot_boundary: 0
   max_death_counter: 0
   y_step: 0
 --- !u!61 &4964878791891467282

@@ -8,12 +8,13 @@ public class CameraPostProcessing : MonoBehaviour
     public Sprite[] bg_textures;
     public Camera camera_bg;
     private int bg_counter = -1;
-    //private int bg_counter = 0;
     
     public Material material;
 
     private RenderTexture bg_view;
 
+    private int window_x = 224;
+    private int window_y = 256;
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
 
@@ -22,8 +23,7 @@ public class CameraPostProcessing : MonoBehaviour
 
     void Awake()
     {
-        //bg_view = new RenderTexture(624, 350, 16, RenderTextureFormat.ARGB32);
-        bg_view = new RenderTexture(512, 290, 16, RenderTextureFormat.ARGB32);
+        bg_view = new RenderTexture(window_x, window_y, 16, RenderTextureFormat.ARGB32);
         bg_view.filterMode = FilterMode.Point;
         bg_view.Create();
         camera_bg.targetTexture = bg_view;

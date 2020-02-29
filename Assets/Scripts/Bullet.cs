@@ -19,7 +19,7 @@ public class Bullet : MonoBehaviour
     private bool to_explode = false;
 
     private float top_boundary_y = 87f;
-    private float bot_boundary_y = -96f;
+    private float bot_boundary_y = -94f;
 
     // Update is called once per frame
     void Update()
