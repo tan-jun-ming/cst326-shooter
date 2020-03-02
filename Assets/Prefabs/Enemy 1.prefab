@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   is_ufo: 0
-  points_worth: 10
+  points_worth: 30
   manager: {fileID: 0}
   dead: 0
   formation_x: 0
