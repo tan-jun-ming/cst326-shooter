@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 639198616210686533}
   - component: {fileID: 5893467353896683555}
+  - component: {fileID: 1306602822273339150}
   m_Layer: 0
   m_Name: anim
   m_TagString: Untagged
@@ -81,6 +82,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &1306602822273339150
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2983789308973620235}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 388e9cd1eba2c9043977683c73f7607d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4973846259433726529
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,6 +205,7 @@ MonoBehaviour:
   formation_x: 0
   formation_y: 0
   bot_boundary: 0
+  animator: {fileID: 0}
   max_death_counter: 0
   y_step: 0
 --- !u!61 &180892247960526701
@@ -211,5 +232,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.15, y: 0.08}
+  m_Size: {x: 0.11, y: 0.08}
   m_EdgeRadius: 0

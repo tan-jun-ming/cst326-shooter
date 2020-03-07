@@ -14,13 +14,9 @@ public class PlayerManager : MonoBehaviour
     private bool shooting = false;
 
     public bool dead = false;
-    private int kill_timer = 40;
+    private int kill_timer = 120;
 
-    private SpriteRenderer anim;
-    private SpriteRenderer anim_pop_1;
-    private SpriteRenderer anim_pop_2;
-
-    private bool death_anim_step = false;
+    private Animator animator;
 
     // Start is called before the first frame update
     void Start()
@@ -31,9 +27,7 @@ public class PlayerManager : MonoBehaviour
 
         nozzle = (Nozzle)gameObject.transform.Find("Nozzle").GetComponent(typeof(Nozzle));
 
-        anim = (SpriteRenderer)gameObject.transform.Find("anim").GetComponent(typeof(SpriteRenderer));
-        anim_pop_1 = (SpriteRenderer)gameObject.transform.Find("anim_pop_1").GetComponent(typeof(SpriteRenderer));
-        anim_pop_2 = (SpriteRenderer)gameObject.transform.Find("anim_pop_2").GetComponent(typeof(SpriteRenderer));
+        animator = ((Animator)gameObject.transform.Find("anim").GetComponent(typeof(Animator)));
     }
 
     // Update is called once per frame
@@ -45,14 +39,6 @@ public class PlayerManager : MonoBehaviour
             if (kill_timer == 0)
             {
                 GameObject.Destroy(gameObject);
-            }
-
-            if (kill_timer % 4 == 0)
-            {
-                death_anim_step = !death_anim_step;
-
-                anim_pop_1.enabled = death_anim_step;
-                anim_pop_2.enabled = !death_anim_step;
             }
 
             return;
@@ -74,8 +60,12 @@ public class PlayerManager : MonoBehaviour
         float z = Input.GetAxis("Fire1");
         if (z > 0 && !shooting)
         {
-            nozzle.fire();
-            shooting = true;
+            bool fired = nozzle.fire();
+            if (fired)
+            {
+                animator.SetTrigger("fire");
+                shooting = true;
+            }
         } else if (z == 0)
         {
             shooting = false;
@@ -97,8 +87,7 @@ public class PlayerManager : MonoBehaviour
         if (!dead)
         {
             dead = true;
-            anim.enabled = false;
-            anim_pop_1.enabled = true;
+            animator.SetTrigger("die");
 
             if (!forced)
             {

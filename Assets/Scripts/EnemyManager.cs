@@ -123,6 +123,11 @@ public class EnemyManager : MonoBehaviour
         if (freeze > 0)
         {
             freeze--;
+
+            if (freeze == 0)
+            {
+                change_formation_animation_state(true);
+            }
             return;
         }
 
@@ -249,6 +254,8 @@ public class EnemyManager : MonoBehaviour
         }
 
         active_ufo = GameObject.Instantiate(enemy_ufo, ufo_start_pos, Quaternion.Euler(0, 0, 0), gameObject.transform);
+        active_ufo.transform.Find("anim").transform.localScale = Vector3.left * ufo_dir;
+
         Enemy ufo = (Enemy)active_ufo.GetComponent(typeof(Enemy));
         ufo.formation_x = -1;
         ufo.formation_y = -1;
@@ -299,7 +306,7 @@ public class EnemyManager : MonoBehaviour
         }
 
         formation_count--;
-        freeze = max_freeze;
+        set_freeze(max_freeze, x, y);
 
         shootable[x] = get_bottom_enemy(x);
 
@@ -351,9 +358,34 @@ public class EnemyManager : MonoBehaviour
         shooter.fire();
     }
 
-    public void set_freeze(int num)
+    public void set_freeze(int num, int x, int y)
     {
         freeze = num;
+        change_formation_animation_state(false, x, y);
+
+    }
+    public void set_freeze(int num)
+    {
+        set_freeze(num, -1, -1);
+    }
+
+    void change_formation_animation_state(bool state, int x, int y)
+    {
+        for (int i = 0; i < formation.Count; i++)
+        {
+            for (int u=0; u<formation[i].Count; u++)
+            {
+                if (i != y || u != x)
+                {
+                    formation[i][u].animator.enabled = state;
+                }
+            }
+        }
+    }
+
+    void change_formation_animation_state(bool state)
+    {
+        change_formation_animation_state(state, -1, -1);
     }
 
     public void confirm_breach()

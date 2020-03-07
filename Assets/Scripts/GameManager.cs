@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     private int next_round_timer_max = 500;
     private int next_round_timer = 0;
 
-    private int player_respawn_timer_max = 120;
+    private int player_respawn_timer_max = 200;
     private int player_respawn_timer = 0;
 
     private int lives_max = 3;

@@ -24,11 +24,11 @@ public class Nozzle : MonoBehaviour
         bulletholder = GameObject.Find("BulletHolder").transform;
     }
 
-    public void fire()
+    public bool fire()
     {
         if (bullet_limit > 0 && bullet_count >= bullet_limit)
         {
-            return;
+            return false;
         }
 
         GameObject bullet = bullets[Random.Range(0, bullets.Length)];
@@ -41,6 +41,8 @@ public class Nozzle : MonoBehaviour
         bullet_script.speed = bullet_speed;
 
         bullet_count++;
+
+        return true;
     }
 
     public void report_bullet_death()

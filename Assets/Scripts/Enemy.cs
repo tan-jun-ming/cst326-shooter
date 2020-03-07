@@ -20,11 +20,9 @@ public class Enemy : MonoBehaviour
     [HideInInspector]
     public float bot_boundary;
 
-    private bool animation_step = false;
+    [HideInInspector]
+    public Animator animator;
 
-    private SpriteRenderer anim_1;
-    private SpriteRenderer anim_2;
-    private SpriteRenderer anim_pop;
     private Collider2D col;
 
     [HideInInspector]
@@ -41,16 +39,14 @@ public class Enemy : MonoBehaviour
     void Start()
     {
 
-        anim_1 = ((SpriteRenderer)gameObject.transform.Find("anim_1").GetComponent(typeof(SpriteRenderer)));
+        animator = ((Animator)gameObject.transform.Find("anim").GetComponent(typeof(Animator)));
+        animator.SetFloat("offset", Random.Range(0.0f, 1.0f));
 
         if (!is_ufo)
         {
-            nozzle = (Nozzle)gameObject.transform.Find("Nozzle").GetComponent(typeof(Nozzle));
+            nozzle = ((Nozzle)gameObject.transform.Find("Nozzle").GetComponent(typeof(Nozzle)));
             nozzle.shooter = gameObject.GetInstanceID();
-            anim_2 = ((SpriteRenderer)gameObject.transform.Find("anim_2").GetComponent(typeof(SpriteRenderer)));
         }
-
-        anim_pop = ((SpriteRenderer)gameObject.transform.Find("anim_pop").GetComponent(typeof(SpriteRenderer)));
         col = (Collider2D)gameObject.GetComponent(typeof(Collider2D));
     }
 
@@ -62,8 +58,6 @@ public class Enemy : MonoBehaviour
             death_counter--;
             if (death_counter == 0)
             {
-                anim_pop.enabled = false;
-
                 gameObject.transform.position = Vector3.one * -1000f;
                 //GameObject.Destroy(gameObject);
             }
@@ -90,7 +84,6 @@ public class Enemy : MonoBehaviour
         }
 
         gameObject.transform.Translate(to_translate);
-        step_anim();
 
         if (gameObject.transform.position.y <= -64f)
         {
@@ -108,16 +101,6 @@ public class Enemy : MonoBehaviour
         return gameObject.transform.position;
     }
 
-    public void step_anim()
-    {
-        if (!is_ufo)
-        {
-            animation_step = !animation_step;
-
-            anim_1.enabled = !animation_step;
-            anim_2.enabled = animation_step;
-        }
-    }
 
     void za_hando()
     {
@@ -147,6 +130,7 @@ public class Enemy : MonoBehaviour
     {
         if (!dead)
         {
+            animator.SetTrigger("fire");
             nozzle.fire();
         }
     }
@@ -156,12 +140,7 @@ public class Enemy : MonoBehaviour
         dead = true;
         col.enabled = false;
 
-        anim_1.enabled = false;
-        if (!is_ufo)
-        {
-            anim_2.enabled = false;
-        }
-        anim_pop.enabled = true;
+        animator.SetTrigger("die");
 
         death_counter = max_death_counter;
         manager.report_death(this);
