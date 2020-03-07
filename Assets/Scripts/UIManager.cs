@@ -16,9 +16,13 @@ public class UIManager : MonoBehaviour
     private int highscore = 0;
     private int lives = 3;
 
+    private Data data;
+
     // Start is called before the first frame update
     void Start()
     {
+        data = (Data)GameObject.Find("Data").GetComponent(typeof(Data));
+        highscore = data.highscore;
         restart_game();
     }
 
@@ -28,6 +32,7 @@ public class UIManager : MonoBehaviour
     }
     public void restart_game(bool refresh_score)
     {
+
         if (refresh_score)
         {
             score = 0;
@@ -49,6 +54,7 @@ public class UIManager : MonoBehaviour
         if (score > highscore)
         {
             highscore = score;
+            data.highscore = highscore;
         }
 
         update_score();

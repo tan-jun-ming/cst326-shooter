@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,7 +24,8 @@ public class GameManager : MonoBehaviour
 
     private int lives_max = 3;
     private int lives = 3;
-    private int highscore = 0;
+
+    private Data data;
 
     // Start is called before the first frame update
     void Start()
@@ -75,7 +77,7 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetAxis("Fire1") > 0)
             {
-                do_restart();
+                SceneManager.LoadScene("CreditsScene");
             }
         }
 
@@ -146,8 +148,5 @@ public class GameManager : MonoBehaviour
         lives = 0;
         uimanager.show_game_over();
         enemymanager.game_over();
-
-        // Update highscore on game over
-        highscore = Mathf.Max(highscore, uimanager.get_highscore());
     }
 }

@@ -247,6 +247,7 @@ public class EnemyManager : MonoBehaviour
 
         ufo_step_counter = ufo_throttle;
 
+
         if (ufo_dir == 0)
         {
             ufo_dir = -1;
@@ -254,7 +255,8 @@ public class EnemyManager : MonoBehaviour
         }
 
         active_ufo = GameObject.Instantiate(enemy_ufo, ufo_start_pos, Quaternion.Euler(0, 0, 0), gameObject.transform);
-        active_ufo.transform.Find("anim").transform.localScale = Vector3.left * ufo_dir;
+
+        ((SpriteRenderer)active_ufo.transform.Find("anim").GetComponent(typeof(SpriteRenderer))).flipX = ufo_dir > 0;
 
         Enemy ufo = (Enemy)active_ufo.GetComponent(typeof(Enemy));
         ufo.formation_x = -1;

@@ -14,7 +14,7 @@ public class PlayerManager : MonoBehaviour
     private bool shooting = false;
 
     public bool dead = false;
-    private int kill_timer = 120;
+    private int kill_timer = 300;
 
     private Animator animator;
 

@@ -17,11 +17,15 @@ public class Nozzle : MonoBehaviour
     [HideInInspector]
     public int shooter;
 
+    public bool active = true;
 
     // Start is called before the first frame update
     void Start()
     {
-        bulletholder = GameObject.Find("BulletHolder").transform;
+        if (active)
+        {
+            bulletholder = GameObject.Find("BulletHolder").transform;
+        }
     }
 
     public bool fire()

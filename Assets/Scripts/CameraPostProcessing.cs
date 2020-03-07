@@ -7,7 +7,7 @@ public class CameraPostProcessing : MonoBehaviour
 {
     public Sprite[] bg_textures;
     public Camera camera_bg;
-    private int bg_counter = -1;
+    private int bg_counter = 0;
     
     public Material material;
 
@@ -15,6 +15,9 @@ public class CameraPostProcessing : MonoBehaviour
 
     private int window_x = 224;
     private int window_y = 256;
+
+    private Data data;
+
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
 
@@ -32,20 +35,32 @@ public class CameraPostProcessing : MonoBehaviour
         material.SetTexture("_Mask", bg_view);
         set_mask();
 
-        
+
+    }
+
+    void Start()
+    {
+        data = (Data)GameObject.Find("Data").GetComponent(typeof(Data));
+        bg_counter = data.background;
+        set_mask();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.M))
         {
+            update_mask();
             set_mask();
         }
     }
 
-    void set_mask()
+    void update_mask()
     {
         bg_counter = (bg_counter + 1) % bg_textures.Length;
+        data.background = bg_counter;
+    }
+    void set_mask()
+    {
         ((SpriteRenderer)GameObject.Find("bg mask").GetComponent(typeof(SpriteRenderer))).sprite = bg_textures[bg_counter];
 
     }
