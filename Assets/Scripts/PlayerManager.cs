@@ -17,6 +17,7 @@ public class PlayerManager : MonoBehaviour
     private int kill_timer = 300;
 
     private Animator animator;
+    private SoundManager soundmanager;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,7 @@ public class PlayerManager : MonoBehaviour
         nozzle = (Nozzle)gameObject.transform.Find("Nozzle").GetComponent(typeof(Nozzle));
 
         animator = ((Animator)gameObject.transform.Find("anim").GetComponent(typeof(Animator)));
+        soundmanager = (SoundManager)GameObject.Find("SoundManager").GetComponent(typeof(SoundManager));
     }
 
     // Update is called once per frame
@@ -65,6 +67,7 @@ public class PlayerManager : MonoBehaviour
             {
                 animator.SetTrigger("fire");
                 shooting = true;
+                soundmanager.play_sound(SoundManager.SoundType.PlayerShoot);
             }
         } else if (z == 0)
         {
@@ -87,10 +90,11 @@ public class PlayerManager : MonoBehaviour
         if (!dead)
         {
             dead = true;
-            animator.SetTrigger("die");
 
             if (!forced)
             {
+                soundmanager.play_sound(SoundManager.SoundType.PlayerDie);
+                animator.SetTrigger("die");
                 gamemanager.report_player_death();
             }
         }

@@ -265,6 +265,8 @@ public class EnemyManager : MonoBehaviour
         ufo.max_death_counter = max_freeze;
         ufo.points_worth = Random.Range(1, 4) * 50;
 
+        ((SoundManager)GameObject.Find("SoundManager").GetComponent(typeof(SoundManager))).play_sound(SoundManager.SoundType.UfoEnter);
+
     }
 
     void step_ufo()

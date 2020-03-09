@@ -34,10 +34,13 @@ public class Enemy : MonoBehaviour
 
     private Nozzle nozzle;
 
+    private SoundManager soundmanager;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        soundmanager = (SoundManager)GameObject.Find("SoundManager").GetComponent(typeof(SoundManager));
 
         animator = ((Animator)gameObject.transform.Find("anim").GetComponent(typeof(Animator)));
         animator.SetFloat("offset", Random.Range(0.0f, 1.0f));
@@ -131,6 +134,7 @@ public class Enemy : MonoBehaviour
         if (!dead)
         {
             animator.SetTrigger("fire");
+            soundmanager.play_sound(SoundManager.SoundType.EnemyShoot);
             nozzle.fire();
         }
     }
@@ -141,6 +145,7 @@ public class Enemy : MonoBehaviour
         col.enabled = false;
 
         animator.SetTrigger("die");
+        soundmanager.play_sound(SoundManager.SoundType.EnemyDie);
 
         death_counter = max_death_counter;
         manager.report_death(this);
